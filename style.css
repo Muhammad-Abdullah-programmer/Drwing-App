@@ -1,0 +1,47 @@
+/* Custom styles to complement Tailwind */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+#drawingCanvas {
+    cursor: crosshair;
+    border: 2px solid #4B5563;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.tool-btn.active {
+    background-color: #3B82F6 !important;
+    color: white;
+}
+
+.color-btn.active {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.chat-message {
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #374151;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4B5563;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6B7280;
+}

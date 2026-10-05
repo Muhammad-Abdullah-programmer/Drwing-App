@@ -1,0 +1,12 @@
+{
+  "name": "collabdraw",
+  "version": "1.0.0",
+  "description": "Real-time collaborative drawing app",
+  "scripts": {
+    "build": "node api.js && tailwindcss -i ./src/input.css -o ./dist/output.css",
+    "watch": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.3.0"
+  }
+}
