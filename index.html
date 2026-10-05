@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CollabDraw - Real-time Drawing App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-900 text-white font-['Poppins']">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-gray-800 shadow-lg p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-paint-brush text-3xl text-blue-400"></i>
+                    <h1 class="text-2xl font-bold">Collab<span class="text-blue-400">Draw</span></h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gray-700 px-4 py-2 rounded-lg">
+                        <span id="userCount" class="text-green-400 font-bold">1</span> Online Users
+                    </div>
+                    <button id="clearBtn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition">
+                        Clear Canvas
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-gray-800 p-4 hidden md:block">
+                <div class="space-y-6">
+                    <!-- Tools Section -->
+                    <div>
+                        <h2 class="text-lg font-semibold mb-3 text-blue-300">Tools</h2>
+                        <div class="space-y-2">
+                            <button data-tool="pencil" class="tool-btn active w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                                <i class="fas fa-pencil-alt mr-2"></i> Pencil
+                            </button>
+                            <button data-tool="line" class="tool-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                                <i class="fas fa-slash mr-2"></i> Line
+                            </button>
+                            <button data-tool="rectangle" class="tool-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                                <i class="fas fa-square mr-2"></i> Rectangle
+                            </button>
+                            <button data-tool="circle" class="tool-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                                <i class="fas fa-circle mr-2"></i> Circle
+                            </button>
+                            <button data-tool="eraser" class="tool-btn w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                                <i class="fas fa-eraser mr-2"></i> Eraser
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Colors Section -->
+                    <div>
+                        <h2 class="text-lg font-semibold mb-3 text-blue-300">Colors</h2>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button data-color="#000000" class="color-btn active w-10 h-10 rounded-full border-2 border-white" style="background-color: #000000;"></button>
+                            <button data-color="#FF0000" class="color-btn w-10 h-10 rounded-full" style="background-color: #FF0000;"></button>
+                            <button data-color="#00FF00" class="color-btn w-10 h-10 rounded-full" style="background-color: #00FF00;"></button>
+                            <button data-color="#0000FF" class="color-btn w-10 h-10 rounded-full" style="background-color: #0000FF;"></button>
+                            <button data-color="#FFFF00" class="color-btn w-10 h-10 rounded-full" style="background-color: #FFFF00;"></button>
+                            <button data-color="#FF00FF" class="color-btn w-10 h-10 rounded-full" style="background-color: #FF00FF;"></button>
+                            <button data-color="#00FFFF" class="color-btn w-10 h-10 rounded-full" style="background-color: #00FFFF;"></button>
+                            <button data-color="#FFFFFF" class="color-btn w-10 h-10 rounded-full border border-gray-400" style="background-color: #FFFFFF;"></button>
+                        </div>
+                    </div>
+
+                    <!-- Brush Size -->
+                    <div>
+                        <h2 class="text-lg font-semibold mb-3 text-blue-300">Brush Size</h2>
+                        <input type="range" id="brushSize" min="1" max="50" value="5" class="w-full">
+                        <div class="flex justify-between mt-2">
+                            <span>Thin</span>
+                            <span id="brushValue">5px</span>
+                            <span>Thick</span>
+                        </div>
+                    </div>
+
+                    <!-- Chat Section (Mobile Only) -->
+                    <div class="md:hidden">
+                        <h2 class="text-lg font-semibold mb-3 text-blue-300">Chat</h2>
+                        <div id="chatMessages" class="h-32 overflow-y-auto mb-2 bg-gray-900 p-2 rounded">
+                            <div class="text-sm text-gray-400">Welcome to the drawing room!</div>
+                        </div>
+                        <div class="flex">
+                            <input type="text" id="chatInput" placeholder="Type message..." class="flex-1 bg-gray-700 p-2 rounded-l">
+                            <button id="sendBtn" class="bg-blue-500 px-3 rounded-r">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Canvas Area -->
+            <main class="flex-1 flex flex-col">
+                <!-- Canvas Container -->
+                <div class="flex-1 relative bg-gray-700 overflow-auto">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <canvas id="drawingCanvas" class="bg-white shadow-2xl">
+                            Your browser does not support the canvas element.
+                        </canvas>
+                    </div>
+                </div>
+
+                <!-- Mobile Toolbar -->
+                <div class="md:hidden bg-gray-800 p-3">
+                    <div class="flex justify-between items-center">
+                        <div class="flex space-x-2 overflow-x-auto">
+                            <button data-tool="pencil" class="tool-btn active p-2 bg-gray-700 rounded">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <button data-tool="line" class="tool-btn p-2 bg-gray-700 rounded">
+                                <i class="fas fa-slash"></i>
+                            </button>
+                            <button data-tool="rectangle" class="tool-btn p-2 bg-gray-700 rounded">
+                                <i class="fas fa-square"></i>
+                            </button>
+                            <button data-tool="circle" class="tool-btn p-2 bg-gray-700 rounded">
+                                <i class="fas fa-circle"></i>
+                            </button>
+                            <button data-tool="eraser" class="tool-btn p-2 bg-gray-700 rounded">
+                                <i class="fas fa-eraser"></i>
+                            </button>
+                        </div>
+                        <div class="flex space-x-2">
+                            <input type="color" id="colorPicker" value="#000000" class="w-8 h-8">
+                            <button id="mobileClear" class="bg-red-500 p-2 rounded">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Chat Sidebar (Desktop Only) -->
+            <aside class="w-64 bg-gray-800 p-4 hidden md:block">
+                <h2 class="text-lg font-semibold mb-3 text-blue-300">Chat Room</h2>
+                <div id="chatMessages" class="h-96 overflow-y-auto mb-3 bg-gray-900 p-3 rounded">
+                    <div class="text-sm text-gray-400">Welcome to the drawing room! Start collaborating with others.</div>
+                </div>
+                <div class="flex">
+                    <input type="text" id="chatInput" placeholder="Type your message..." class="flex-1 bg-gray-700 p-2 rounded-l focus:outline-none">
+                    <button id="sendBtn" class="bg-blue-500 hover:bg-blue-600 px-4 rounded-r transition">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 p-3 text-center text-gray-400 text-sm">
+            <p>Real-time Collaborative Drawing App | Made with HTML5 Canvas, JavaScript & Tailwind CSS</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
